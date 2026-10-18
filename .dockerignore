@@ -1,0 +1,9 @@
+.git
+.github
+ova/scorm
+ova/evidencias
+docs
+gns3
+scripts
+*.zip
+README.md

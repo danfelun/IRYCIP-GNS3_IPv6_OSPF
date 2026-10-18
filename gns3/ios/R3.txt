@@ -1,0 +1,32 @@
+! REFERENCIA DOCENTE - verificar interfaces reales
+! LAN40 DHCPv6 Stateful en clientes; servidor web IPv6 estatica ::10.
+! Verificar que DHCPv6 nunca conceda ::10 a otro host.
+conf t
+hostname R3
+ipv6 unicast-routing
+ipv6 cef
+ipv6 dhcp pool LAN40
+ address prefix 2001:DB8:ACAD:40::/64
+ domain-name laboratorio.example
+exit
+interface GigabitEthernet0/0
+ description R3 a R2
+ ipv6 address 2001:DB8:ACAD:200::2/64
+ ipv6 ospf 10 area 0
+ no shutdown
+exit
+interface GigabitEthernet1/0
+ description LAN40 hacia Switch3
+ ipv6 address 2001:DB8:ACAD:40::1/64
+ ipv6 nd managed-config-flag
+ ipv6 nd prefix 2001:DB8:ACAD:40::/64 no-autoconfig
+ ipv6 dhcp server LAN40
+ ipv6 ospf 10 area 0
+ no shutdown
+exit
+ipv6 router ospf 10
+ router-id 3.3.3.3
+ passive-interface GigabitEthernet1/0
+exit
+end
+write memory

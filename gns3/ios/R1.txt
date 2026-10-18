@@ -1,0 +1,31 @@
+! REFERENCIA DOCENTE - Cisco c7200 IOS 15.2; verificar nombres reales de interfaz.
+! Esta configuracion es orientativa; pegue los comandos en modo configuracion.
+conf t
+hostname R1
+ipv6 unicast-routing
+ipv6 cef
+ipv6 dhcp pool LAN10
+ address prefix 2001:DB8:ACAD:10::/64
+ domain-name laboratorio.example
+exit
+interface GigabitEthernet1/0
+ description LAN10 hacia Switch1
+ ipv6 address 2001:DB8:ACAD:10::1/64
+ ipv6 nd managed-config-flag
+ ipv6 nd prefix 2001:DB8:ACAD:10::/64 no-autoconfig
+ ipv6 dhcp server LAN10
+ ipv6 ospf 10 area 0
+ no shutdown
+exit
+interface GigabitEthernet0/0
+ description R1 a R2
+ ipv6 address 2001:DB8:ACAD:100::1/64
+ ipv6 ospf 10 area 0
+ no shutdown
+exit
+ipv6 router ospf 10
+ router-id 1.1.1.1
+ passive-interface GigabitEthernet1/0
+exit
+end
+write memory
